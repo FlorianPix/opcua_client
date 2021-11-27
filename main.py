@@ -19,7 +19,7 @@ def main():
                                     try:
                                         print(ch.nodeid.Identifier, ch.get_value())
                                     except:
-                                        print(ch)
+                                        pass
 
 
 if __name__ == "__main__":

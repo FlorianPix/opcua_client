@@ -1,26 +1,22 @@
-from opcua import Client
-from opcua import ua
+import time
+
+import opcua
+from opcua import Client, ua
+from opcua.ua.uaerrors import UaStatusCodeError
+
+from myclient import MyClient
 
 
 def main():
-    with Client("opc.tcp://141.30.154.211:4850") as client:
-        client.connect()
-        client.load_type_definitions()
-        root = client.get_root_node()
-        objects = client.get_objects_node()
-        idx = client.get_namespace_index("http://141.30.154.212:8087/OPC/DA")
-        for child in root.get_children():
-            if child.nodeid.Identifier == 85:
-                for chil in child.get_children():
-                    if chil.nodeid.Identifier == 'XML DA Server - eats11Root':
-                        for chi in chil.get_children():
-                            if chi.nodeid.Identifier == 'F:Schneider':
-                                for ch in chi.get_children():
-                                    try:
-                                        print(ch.nodeid.Identifier, ch.get_value())
-                                    except:
-                                        pass
+    client = MyClient()
+    if client.ready:
+        for i in range(0, 10):
+            if client.sub_fuell1_ist.hasChanged() or client.sub_fuell2_ist.hasChanged() or client.sub_fuell3_ist.hasChanged():
+                print(client.sub_fuell1_ist.getVar(), client.sub_fuell2_ist.getVar(), client.sub_fuell3_ist.getVar())
+            time.sleep(1)
+    client.client.disconnect()
 
 
 if __name__ == "__main__":
     main()
+

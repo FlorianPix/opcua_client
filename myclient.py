@@ -15,6 +15,8 @@ class MyClient:
             self.client.connect()
             self.client.load_type_definitions()
             self.root = self.client.get_root_node()
+            self.objects = self.client.get_objects_node()
+            self.idx = self.client.get_namespace_index(self.uri)
 
             self.node_dict = dict()
             self.init_node_dict()
@@ -33,7 +35,10 @@ class MyClient:
             self.sub_volumen_1 = self.subscribe_to_node(self.node_dict['Schneider/Volumen1'], self.default_interval)
             self.sub_volumen_2 = self.subscribe_to_node(self.node_dict['Schneider/Volumen2'], self.default_interval)
             """
-            self.ready = True
+
+            print("connected with Server")
+            self.connected = True
+
         except BaseException as err:
             print(err)
             print('Failed to connect to server!')

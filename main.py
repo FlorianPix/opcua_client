@@ -1,9 +1,5 @@
 import time
 
-import opcua
-from opcua import Client, ua
-from opcua.ua.uaerrors import UaStatusCodeError
-
 from myclient import MyClient
 
 

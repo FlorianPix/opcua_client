@@ -1,3 +1,4 @@
+import functools
 import random
 import time
 from random import randrange
@@ -5,7 +6,7 @@ from opcua import Client
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QSlider, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import QMainWindow, QSlider, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel, QAction, qApp
 
 import global_style
 
@@ -16,8 +17,51 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("My App")
 
+        self.initUI()
+
         self.widget = SliderTripleWidget(self)
         self.setCentralWidget(self.widget)
+
+    def initUI(self):
+        exitAction = QAction('&Exit', self)
+        exitAction.setShortcut('Ctrl+Q')
+        exitAction.setStatusTip('Exit application')
+        exitAction.triggered.connect(qApp.quit)
+
+        uebersichtView = QAction('&Übersicht', self)
+        uebersichtView.setShortcut('Ctrl+A')
+        uebersichtView.setStatusTip('Exit application')
+        uebersichtView.triggered.connect(functools.partial(print, "Übersicht"))
+
+        umpumpenView = QAction('&Umpumpen', self)
+        umpumpenView.setShortcut('Ctrl+S')
+        umpumpenView.setStatusTip('Exit application')
+        umpumpenView.triggered.connect(functools.partial(print, "Umpumpen"))
+
+        dosierenView = QAction('&Dosieren', self)
+        dosierenView.setShortcut('Ctrl+D')
+        dosierenView.setStatusTip('Exit application')
+        dosierenView.triggered.connect(functools.partial(print, "Dosieren"))
+
+        fuellstandView = QAction('&Füllstand', self)
+        fuellstandView.setShortcut('Ctrl+F')
+        fuellstandView.setStatusTip('Exit application')
+        fuellstandView.triggered.connect(functools.partial(print, "Füllstand"))
+
+        durchflussView = QAction('&Durchfluss', self)
+        durchflussView.setShortcut('Ctrl+G')
+        durchflussView.setStatusTip('Exit application')
+        durchflussView.triggered.connect(functools.partial(print, "Durchfluss"))
+
+        self.statusBar()
+
+        menubar = self.menuBar()
+        menu = menubar.addMenu('&Menu')
+        menu.addAction(exitAction)
+        menu.addAction(umpumpenView)
+        menu.addAction(dosierenView)
+        menu.addAction(fuellstandView)
+        menu.addAction(durchflussView)
 
 
 class SliderTripleWidget(QWidget):
@@ -74,51 +118,23 @@ class SliderTripleWidget(QWidget):
         self.layout.addWidget(self.labels_second_widget)
         self.setLayout(self.layout)
 
-    def value_changed_0(self, i):
+    def value_changed(self, nr, i):
+        # print(nr)
         # print(i)
         pass
 
-    def value_changed_1(self, i):
-        # print(i)
-        pass
-
-    def value_changed_2(self, i):
-        # print(i)
-        pass
-
-    def slider_position_0(self, p):
+    def slider_position(self, nr, p):
+        # print(nr)
         # print("position: ", p)
         pass
 
-    def slider_position_1(self, p):
-        # print("position: ", p)
-        pass
-
-    def slider_position_2(self, p):
-        # print("position: ", p)
-        pass
-
-    def slider_pressed_0(self):
+    def slider_pressed(self, nr):
+        # print(nr)
         # print("Pressed!")
         pass
 
-    def slider_pressed_1(self):
-        # print("Pressed!")
-        pass
-
-    def slider_pressed_2(self):
-        # print("Pressed!")
-        pass
-
-    def slider_released_0(self):
-        # print("Released")
-        pass
-
-    def slider_released_1(self):
-        # print("Released")
-        pass
-
-    def slider_released_2(self):
+    def slider_released(self, nr):
+        # print(nr)
         # print("Released")
         pass
 
@@ -131,26 +147,12 @@ class SliderTripleWidget(QWidget):
 
         widget.setMinimum(0)
         widget.setMaximum(250)
-
         widget.setSingleStep(1)
 
-        if i == 0:
-            widget.valueChanged.connect(self.value_changed_0)
-            widget.sliderMoved.connect(self.slider_position_0)
-            widget.sliderPressed.connect(self.slider_pressed_0)
-            widget.sliderReleased.connect(self.slider_released_0)
-        else:
-            if i == 1:
-                widget.valueChanged.connect(self.value_changed_1)
-                widget.sliderMoved.connect(self.slider_position_1)
-                widget.sliderPressed.connect(self.slider_pressed_1)
-                widget.sliderReleased.connect(self.slider_released_1)
-            else:
-                widget.valueChanged.connect(self.value_changed_2)
-                widget.sliderMoved.connect(self.slider_position_2)
-                widget.sliderPressed.connect(self.slider_pressed_2)
-                widget.sliderReleased.connect(self.slider_released_2)
-
+        widget.valueChanged.connect(functools.partial(self.value_changed, i))
+        widget.sliderMoved.connect(functools.partial(self.slider_position, i))
+        widget.sliderPressed.connect(functools.partial(self.slider_pressed, i))
+        widget.sliderReleased.connect(functools.partial(self.slider_released, i))
         return widget
 
     def create_label(self, text):

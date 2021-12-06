@@ -1,3 +1,4 @@
+import functools
 import random
 import time
 from random import randrange
@@ -5,35 +6,74 @@ from opcua import Client
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QSlider, QApplication, QWidget, QHBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QSlider, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QLabel
 
 import global_style
+from myclient import MyClient
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("My App")
+        self.setWindowTitle("IAT")
 
         self.widget = SliderTripleWidget(self)
         self.setCentralWidget(self.widget)
 
 
 class SliderTripleWidget(QWidget):
-
     def __init__(self, parent):
         super(SliderTripleWidget, self).__init__(parent)
-        self.layout = QHBoxLayout(self)
+        print(parent.windowTitle())
+        self.sliders_widget = QWidget(self)
+        self.sliders_layout = QHBoxLayout(self)
+        self.labels_first_widget = QWidget(self)
+        self.labels_first_layout = QHBoxLayout(self)
+        self.labels_second_widget = QWidget(self)
+        self.labels_second_layout = QHBoxLayout(self)
+        self.layout = QVBoxLayout(self)
 
         self.slider0 = self.create_slider(0)
         self.slider1 = self.create_slider(1)
         self.slider2 = self.create_slider(2)
         self.sliders = [self.slider0, self.slider1, self.slider2]
 
-        self.layout.addWidget(self.slider0)
-        self.layout.addWidget(self.slider1)
-        self.layout.addWidget(self.slider2)
+        for slider in self.sliders:
+            qss_path = "test.qss"
+            with open(qss_path, "r") as fh:
+                slider.setStyleSheet(fh.read())
+            self.sliders_layout.addWidget(slider)
+
+        self.label0 = self.create_label("Behälter 1")
+        self.label1 = self.create_label("Behälter 2")
+        self.label2 = self.create_label("Behälter 3")
+        self.labels_first = [self.label0, self.label1, self.label2]
+        self.label3 = self.create_label("0.0 mm")
+        self.label4 = self.create_label("0.0 mm")
+        self.label5 = self.create_label("0.0 mm")
+        self.labels_second = [self.label3, self.label4, self.label5]
+
+        for label in self.labels_first:
+            qss_path = "test2.qss"
+            with open(qss_path, "r") as fh:
+                label.setStyleSheet(fh.read())
+            self.labels_first_layout.addWidget(label)
+
+        for label in self.labels_second:
+            qss_path = "test2.qss"
+            with open(qss_path, "r") as fh:
+                label.setStyleSheet(fh.read())
+            self.labels_second_layout.addWidget(label)
+
+        self.sliders_widget.setLayout(self.sliders_layout)
+        self.layout.addWidget(self.sliders_widget)
+        self.layout.addStretch()
+        self.labels_first_widget.setLayout(self.labels_first_layout)
+        self.layout.addWidget(self.labels_first_widget)
+        self.layout.addStretch()
+        self.labels_second_widget.setLayout(self.labels_second_layout)
+        self.layout.addWidget(self.labels_second_widget)
         self.setLayout(self.layout)
 
     def value_changed_0(self, i):
@@ -85,7 +125,8 @@ class SliderTripleWidget(QWidget):
         pass
 
     def set_slider_position(self, slider_nr, p):
-        self.sliders[slider_nr].setValue(p)
+        self.sliders[slider_nr].setValue(int(p))
+        self.labels_second[slider_nr].setText(str(int(p)) + " mm")
 
     def create_slider(self, i):
         widget = QSlider(Qt.Vertical)
@@ -114,15 +155,21 @@ class SliderTripleWidget(QWidget):
 
         return widget
 
+    def create_label(self, text):
+        widget = QLabel()
+        widget.setText(str(text))
+        widget.setAlignment(Qt.AlignCenter)
+        return widget
 
-def update():
+
+def update(client):
     v0 = 0
     v1 = 0
     v2 = 0
 
     try:
-        v0, v1, v2 = get_values()
-    except:
+        v0, v1, v2 = get_values(client)
+    except BaseException as err:
         print("Couldn't get new values")
 
     window.widget.set_slider_position(0, v0)
@@ -130,34 +177,19 @@ def update():
     window.widget.set_slider_position(2, v2)
 
 
-def get_values():
+def get_values(client):
     v0 = 0
     v1 = 0
     v2 = 0
-    with Client("opc.tcp://141.30.154.211:4850") as client:
-        client.connect()
-        client.load_type_definitions()
-        root = client.get_root_node()
-        objects = client.get_objects_node()
-        idx = client.get_namespace_index("http://141.30.154.212:8087/OPC/DA")
-        for child in root.get_children():
-            if child.nodeid.Identifier == 85:
-                for chil in child.get_children():
-                    if chil.nodeid.Identifier == 'XML DA Server - eats11Root':
-                        for chi in chil.get_children():
-                            if chi.nodeid.Identifier == 'F:Schneider':
-                                for ch in chi.get_children():
-                                    try:
-                                        if ch.nodeid.Identifier == "Schneider//Fuellstand1_Ist":
-                                            v0 = int(ch.get_value())
-                                        if ch.nodeid.Identifier == "Schneider//Fuellstand2_Ist":
-                                            v1 = int(ch.get_value())
-                                        if ch.nodeid.Identifier == "Schneider//Fuellstand3_Ist":
-                                            v2 = int(ch.get_value())
-                                    except:
-                                        pass
-        print(v0, v1, v2)
-        return v0, v1, v2
+
+    if client.sub_fuell1_ist.hasChanged():
+        v0 = client.sub_fuell1_ist.getVar()
+    if client.sub_fuell2_ist.hasChanged():
+        v1 = client.sub_fuell2_ist.getVar()
+    if client.sub_fuell3_ist.hasChanged():
+        v2 = client.sub_fuell3_ist.getVar()
+
+    return v0, v1, v2
 
 
 if __name__ == '__main__':
@@ -166,8 +198,16 @@ if __name__ == '__main__':
     window = MainWindow()
     window.show()
 
-    timer = QtCore.QTimer()
-    timer.timeout.connect(update)
-    timer.start(10000)
-    app.exec()
+    client = MyClient()
 
+    timer = QtCore.QTimer()
+    timer.timeout.connect(functools.partial(update, client))
+    timer.start(1000)
+
+    try:
+        app.exec()
+    except BaseException as err:
+        print(err)
+    finally:
+        client.client.disconnect()
+        print("disconnected")

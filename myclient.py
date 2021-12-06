@@ -8,7 +8,7 @@ class MyClient:
         self.server_address = "opc.tcp://141.30.154.211:4850"
         self.uri = "http://141.30.154.212:8087/OPC/DA"
         self.default_interval = 100
-        self.ready = False
+        self.connected = False
 
         try:
             self.client = Client(self.server_address)

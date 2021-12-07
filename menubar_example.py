@@ -17,23 +17,28 @@ class basicMenubar(QMainWindow):
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(qApp.quit)
 
+        uebersichtView = QAction('&Übersicht', self)
+        uebersichtView.setShortcut('Ctrl+A')
+        uebersichtView.setStatusTip('Exit application')
+        uebersichtView.triggered.connect(functools.partial(print, "Übersicht"))
+
         umpumpenView = QAction('&Umpumpen', self)
-        umpumpenView.setShortcut('Ctrl+A')
+        umpumpenView.setShortcut('Ctrl+S')
         umpumpenView.setStatusTip('Exit application')
         umpumpenView.triggered.connect(functools.partial(print, "Umpumpen"))
 
         dosierenView = QAction('&Dosieren', self)
-        dosierenView.setShortcut('Ctrl+S')
+        dosierenView.setShortcut('Ctrl+D')
         dosierenView.setStatusTip('Exit application')
         dosierenView.triggered.connect(functools.partial(print, "Dosieren"))
 
         fuellstandView = QAction('&Füllstand', self)
-        fuellstandView.setShortcut('Ctrl+D')
+        fuellstandView.setShortcut('Ctrl+F')
         fuellstandView.setStatusTip('Exit application')
         fuellstandView.triggered.connect(functools.partial(print, "Füllstand"))
 
         durchflussView = QAction('&Durchfluss', self)
-        durchflussView.setShortcut('Ctrl+F')
+        durchflussView.setShortcut('Ctrl+G')
         durchflussView.setStatusTip('Exit application')
         durchflussView.triggered.connect(functools.partial(print, "Durchfluss"))
 
@@ -42,6 +47,7 @@ class basicMenubar(QMainWindow):
         menubar = self.menuBar()
         menu = menubar.addMenu('&Menu')
         menu.addAction(exitAction)
+        menu.addAction(uebersichtView)
         menu.addAction(umpumpenView)
         menu.addAction(dosierenView)
         menu.addAction(fuellstandView)

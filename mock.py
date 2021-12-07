@@ -5,8 +5,8 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMainWindow, QApplication, QAction, qApp
 
 import global_style
-from frame1.frame1 import Frame1
-from main_view.main_view import MainView
+from frames.frame1.frame1 import Frame1
+from frames.main_view.main_view import MainView
 
 
 class MainWindow(QMainWindow):

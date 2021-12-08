@@ -9,6 +9,7 @@ class MainView(QWidget):
 
     def __init__(self, parent):
         super(MainView, self).__init__(parent)
+        self.parent = parent
         self.sliders_widget = QWidget(self)
         self.sliders_layout = QHBoxLayout(self)
         self.labels_first_widget = QWidget(self)
@@ -81,6 +82,7 @@ class MainView(QWidget):
         widget.setMinimum(0)
         widget.setMaximum(250)
         widget.setSingleStep(1)
+        widget.setValue(self.parent.volumes[i])
 
         widget.valueChanged.connect(functools.partial(self.value_changed, i))
         widget.sliderMoved.connect(functools.partial(self.slider_position, i))

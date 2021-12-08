@@ -1,4 +1,5 @@
 import functools
+import re
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
@@ -10,6 +11,9 @@ class Frame3(QWidget):
         super(Frame3, self).__init__(parent)
         self.parent = parent
         self.props = []
+        self.chosen_sliders = []
+        self.chosen_name_labels = []
+        self.chosen_labels = []
         self.sliders_widget = QWidget(self)
         self.sliders_layout = QHBoxLayout(self)
         self.info_widget = QWidget(self)
@@ -39,11 +43,16 @@ class Frame3(QWidget):
         self.abort = self.create_button("Abbrechen")
 
     def propify(self):
-        for i in self.props:
+        for i in self.props[0:2]:
+            self.chosen_sliders.append(self.sliders[i])
+            self.chosen_name_labels.append(self.name_labels[i])
+            self.chosen_labels.append(self.labels[i])
+
+        for slider in self.chosen_sliders:
             qss_path = "frames/frame3/slider.qss"
             with open(qss_path, "r") as fh:
-                self.sliders[i].setStyleSheet(fh.read())
-            self.sliders_layout.addWidget(self.sliders[i])
+                slider.setStyleSheet(fh.read())
+            self.sliders_layout.addWidget(slider)
 
         for label in self.static_labels:
             qss_path = "frames/frame3/label.qss"
@@ -56,17 +65,17 @@ class Frame3(QWidget):
             self.info_field.setStyleSheet(fh2.read())
             self.info_layout.addWidget(self.info_field)
 
-        for i in self.props:
+        for label in self.chosen_name_labels:
             qss_path = "frames/frame3/label.qss"
             with open(qss_path, "r") as fh:
-                self.name_labels[i].setStyleSheet(fh.read())
-            self.name_labels_layout.addWidget(self.name_labels[i])
+                label.setStyleSheet(fh.read())
+            self.name_labels_layout.addWidget(label)
 
-        for i in self.props:
+        for label in self.chosen_labels:
             qss_path = "frames/frame3/label.qss"
             with open(qss_path, "r") as fh:
-                self.labels[i].setStyleSheet(fh.read())
-            self.labels_layout.addWidget(self.labels[i])
+                label.setStyleSheet(fh.read())
+            self.labels_layout.addWidget(label)
 
         qss_path = "frames/frame3/label.qss"
         with open(qss_path, "r") as fh:
@@ -134,6 +143,7 @@ class Frame3(QWidget):
         widget.setMinimum(0)
         widget.setMaximum(250)
         widget.setSingleStep(1)
+        widget.setValue(self.parent.volumes[i])
 
         widget.valueChanged.connect(functools.partial(self.value_changed, i))
         widget.sliderMoved.connect(functools.partial(self.slider_position, i))
@@ -156,15 +166,42 @@ class Frame3(QWidget):
         widget = QLineEdit()
         widget.setFont(font)
         widget.setAlignment(Qt.AlignRight)
-        widget.returnPressed.connect(lambda: self.parent.change_frame(4, props=self.props + [self.sliders[0].value(), self.sliders[1].value()]))
+        widget.returnPressed.connect(self.entered)
         widget.textEdited.connect(self.text_changed)
         return widget
 
+    def entered(self):
+        try:
+            content = int(self.target.text())
+            if len(self.props) == 3:
+                try:
+                    self.props[2] = content
+                except ValueError as err:
+                    print(err)
+            else:
+                try:
+                    self.props.append(content)
+                except ValueError as err:
+                    print(err)
+
+            self.props.append(self.chosen_sliders[0].value())
+            self.props.append(self.chosen_sliders[1].value())
+            self.parent.change_frame(4, props=self.props)
+        except ValueError as err:
+            correction = re.sub("[^0-9]", "", self.target.text())
+            self.target.setText(correction)
+
     def text_changed(self, text):
         if len(self.props) == 3:
-            self.props[2] = int(text)
+            try:
+                self.props[2] = int(text)
+            except ValueError as err:
+                print(err)
         else:
-            self.props.append(int(text))
+            try:
+                self.props.append(int(text))
+            except ValueError as err:
+                print(err)
 
     def create_button(self, text):
         font = QtGui.QFont()

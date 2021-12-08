@@ -10,6 +10,9 @@ class Frame4(QWidget):
         super(Frame4, self).__init__(parent)
         self.parent = parent
         self.props = []
+        self.chosen_sliders = []
+        self.chosen_name_labels = []
+        self.chosen_labels = []
         self.sliders_widget = QWidget(self)
         self.sliders_layout = QHBoxLayout(self)
         self.static_labels_widget = QWidget(self)
@@ -39,11 +42,16 @@ class Frame4(QWidget):
         self.abort = self.create_button("Beenden")
 
     def propify(self):
-        for i in range(0, 2):
-            qss_path = "frames/frame4/slider.qss"
+        for i in self.props[0:2]:
+            self.chosen_sliders.append(self.sliders[i])
+            self.chosen_name_labels.append(self.name_labels[i])
+            self.chosen_labels.append(self.labels[i])
+
+        for slider in self.chosen_sliders:
+            qss_path = "frames/frame3/slider.qss"
             with open(qss_path, "r") as fh:
-                self.sliders[i].setStyleSheet(fh.read())
-            self.sliders_layout.addWidget(self.sliders[i])
+                slider.setStyleSheet(fh.read())
+            self.sliders_layout.addWidget(slider)
 
         for label in self.static_labels:
             qss_path = "frames/frame4/label.qss"
@@ -51,17 +59,17 @@ class Frame4(QWidget):
                 label.setStyleSheet(fh.read())
             self.static_labels_layout.addWidget(label)
 
-        for i in range(0, 2):
-            qss_path = "frames/frame4/label.qss"
+        for label in self.chosen_name_labels:
+            qss_path = "frames/frame3/label.qss"
             with open(qss_path, "r") as fh:
-                self.name_labels[i].setStyleSheet(fh.read())
-            self.name_labels_layout.addWidget(self.name_labels[i])
+                label.setStyleSheet(fh.read())
+            self.name_labels_layout.addWidget(label)
 
-        for i in range(0, 2):
-            qss_path = "frames/frame4/label.qss"
+        for label in self.chosen_labels:
+            qss_path = "frames/frame3/label.qss"
             with open(qss_path, "r") as fh:
-                self.labels[i].setStyleSheet(fh.read())
-            self.labels_layout.addWidget(self.labels[i])
+                label.setStyleSheet(fh.read())
+            self.labels_layout.addWidget(label)
 
         qss_path = "frames/frame4/label.qss"
         with open(qss_path, "r") as fh:
@@ -139,14 +147,13 @@ class Frame4(QWidget):
     def set_slider_position(self, slider_nr, p):
         self.sliders[slider_nr].setValue(p)
         self.labels[slider_nr].setText(str(p) + " mm")
-        if slider_nr == 0:
-            target = self.props[slider_nr + 3] - self.props[2]
-            diff = target - self.sliders[0].value()
-            if abs(diff) <= 1:
+        if slider_nr == self.props[0]:
+            target = self.props[3] - self.props[2]
+            diff = target - self.chosen_sliders[0].value()
+            text = self.props[2] + diff
+            self.actual.setText(str(text))
+            if abs(diff) <= 0:
                 self.parent.change_frame(0)
-            else:
-                text = self.props[2] + diff
-                self.actual.setText(str(text))
 
     def create_slider(self, i):
         widget = QSlider(Qt.Vertical)
@@ -154,6 +161,7 @@ class Frame4(QWidget):
         widget.setMinimum(0)
         widget.setMaximum(250)
         widget.setSingleStep(1)
+        widget.setValue(self.parent.volumes[i])
 
         widget.valueChanged.connect(functools.partial(self.value_changed, i))
         widget.sliderMoved.connect(functools.partial(self.slider_position, i))

@@ -5,10 +5,11 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLabel, QSlider, QWidget, QHBoxLayout, QVBoxLayout, QPushButton
 
 
-class Frame1(QWidget):
+class Frame2(QWidget):
     def __init__(self, parent):
-        super(Frame1, self).__init__(parent)
+        super(Frame2, self).__init__(parent)
         self.parent = parent
+        self.props = []
         self.sliders_widget = QWidget(self)
         self.sliders_layout = QHBoxLayout(self)
         self.info_widget = QWidget(self)
@@ -25,15 +26,15 @@ class Frame1(QWidget):
         self.sliders = [self.slider0, self.slider1, self.slider2]
 
         for slider in self.sliders:
-            qss_path = "frames/frame1/slider.qss"
+            qss_path = "frames/frame2/slider.qss"
             with open(qss_path, "r") as fh:
                 slider.setStyleSheet(fh.read())
             self.sliders_layout.addWidget(slider)
 
-        text_path = "frames/frame1/text_frame1.txt"
+        text_path = "frames/frame2/text_frame2.txt"
         with open(text_path, "r", encoding='utf8') as fh:
             self.info_field = self.create_label(fh.read())
-            qss_path = "frames/frame1/label.qss"
+            qss_path = "frames/frame2/label.qss"
             with open(qss_path, "r") as fh2:
                 self.info_field.setStyleSheet(fh2.read())
                 self.info_layout.addWidget(self.info_field)
@@ -42,16 +43,26 @@ class Frame1(QWidget):
         self.labels = [self.create_label("0.0 mm"), self.create_label("0.0 mm"), self.create_label("0.0 mm")]
 
         for button in self.buttons:
-            qss_path = "frames/frame1/button.qss"
+            qss_path = "frames/frame2/button.qss"
             with open(qss_path, "r") as fh:
                 button.setStyleSheet(fh.read())
             self.buttons_layout.addWidget(button)
 
         for label in self.labels:
-            qss_path = "frames/frame1/label.qss"
+            qss_path = "frames/frame2/label.qss"
             with open(qss_path, "r") as fh:
                 label.setStyleSheet(fh.read())
             self.labels_layout.addWidget(label)
+
+    def propify(self):
+        qss_path = "frames/frame2/button_highlight.qss"
+        with open(qss_path, "r") as fh:
+            button = self.buttons[self.props[0]]
+            button.setStyleSheet(fh.read())
+            button.setDisabled(True)
+        qss_path = "frames/frame2/slider_highlight.qss"
+        with open(qss_path, "r") as fh:
+            self.sliders[self.props[0]].setStyleSheet(fh.read())
 
         self.sliders_widget.setLayout(self.sliders_layout)
         self.layout.addWidget(self.sliders_widget)
@@ -115,6 +126,5 @@ class Frame1(QWidget):
         widget = QPushButton()
         widget.setText(str(text))
         widget.setFont(font)
-        props = [nr]
-        widget.clicked.connect(lambda: self.parent.change_frame(2, props=props))
+        widget.clicked.connect(lambda: self.parent.change_frame(3, props=self.props + [nr]))
         return widget

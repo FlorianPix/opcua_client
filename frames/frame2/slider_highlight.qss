@@ -9,6 +9,7 @@ QWidget
 }
 QSlider{
     padding: 8px 4px 8px 4px;
+    border: 2px solid #0099ff;
     border-radius: 4px;
 }
 QSlider::groove:vertical {

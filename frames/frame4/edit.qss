@@ -1,5 +1,5 @@
 
-QLabel
+QLineEdit
 {
     font: "Helvetica";
 	background-color: #e6f5ff;

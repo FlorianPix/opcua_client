@@ -11,9 +11,6 @@ QSlider{
     padding: 8px 4px 8px 4px;
     border-radius: 4px;
 }
-QSlider:hover{
-    background-color: #e6f5ff;
-}
 QSlider::groove:vertical {
     background-color: transparent;
     position: absolute; /* absolutely position 4px from the left and right of the widget. setting margins on the widget should work too... */

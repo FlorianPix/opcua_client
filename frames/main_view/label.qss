@@ -7,6 +7,3 @@ QLabel
 	border-radius: 4px;
 	border: 2px solid #0099ff;
 }
-QLabel:hover{
-    background-color: transparent;
-}

@@ -1,11 +1,14 @@
 import functools
-from random import randrange
+from random import randrange, randint
 
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMainWindow, QApplication, QAction, qApp
 
 import global_style
 from frames.frame1.frame1 import Frame1
+from frames.frame2.frame2 import Frame2
+from frames.frame3.frame3 import Frame3
+from frames.frame4.frame4 import Frame4
 from frames.main_view.main_view import MainView
 
 
@@ -15,6 +18,7 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("IAT control by gesture")
         self.volumes = [125, 125, 125]
+        self.directions = [True, True, True]
 
         exitAction = QAction('&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
@@ -38,14 +42,14 @@ class MainWindow(QMainWindow):
         menu.addAction(umpumpenView)
 
         self.widget = MainView(self)
-        self.widgets = [MainView, Frame1]
+        self.widgets = [MainView, Frame1, Frame2, Frame3, Frame4]
         self.setCentralWidget(self.widget)
 
         self.statusBar().showMessage(u"Übersicht", 10000)
 
     def update(self):
         try:
-            self.volumes[0], self.volumes[1], self.volumes[2] = get_values()
+            self.update_values()
         except:
             print("Couldn't get new values")
 
@@ -53,13 +57,24 @@ class MainWindow(QMainWindow):
         window.widget.set_slider_position(1, self.volumes[1])
         window.widget.set_slider_position(2, self.volumes[2])
 
-    def change_frame(self, widget_index):
+    def change_frame(self, widget_index, props=None):
         self.widget = self.widgets[widget_index](self)
+        if props:
+            self.widget.props = props
+            self.widget.propify()
         self.setCentralWidget(self.widget)
 
-
-def get_values():
-    return randrange(0, 250), randrange(0, 250), randrange(0, 250)
+    def update_values(self):
+        for i in range(0, 3):
+            if not randint(0, 10):
+                self.directions[i] = not self.directions[i]
+        for i in range(0, 3):
+            if self.directions[i]:
+                if self.volumes[i] < 250:
+                    self.volumes[i] += 1
+            else:
+                if self.volumes[i] > 0:
+                    self.volumes[i] -= 1
 
 
 if __name__ == '__main__':

@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("IAT control by gesture")
         self.volumes = [125, 125, 125]
-        self.directions = [True, True, True]
+        self.directions = [0, 0, 0]
 
         exitAction = QAction('&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
@@ -62,19 +62,21 @@ class MainWindow(QMainWindow):
         if props:
             self.widget.props = props
             self.widget.propify()
+            if len(props) > 3:
+                self.directions[props[0]] = -1
+                self.directions[props[1]] = 1
+        if widget_index == 0:
+            self.directions = [0, 0, 0]
         self.setCentralWidget(self.widget)
 
     def update_values(self):
         for i in range(0, 3):
-            if not randint(0, 10):
-                self.directions[i] = not self.directions[i]
-        for i in range(0, 3):
-            if self.directions[i]:
+            if self.directions[i] > 0:
                 if self.volumes[i] < 250:
-                    self.volumes[i] += 1
+                    self.volumes[i] += self.directions[i]
             else:
                 if self.volumes[i] > 0:
-                    self.volumes[i] -= 1
+                    self.volumes[i] += self.directions[i]
 
 
 if __name__ == '__main__':
@@ -86,6 +88,6 @@ if __name__ == '__main__':
 
     timer = QtCore.QTimer()
     timer.timeout.connect(window.update)
-    timer.start(1000)
+    timer.start(500)
     app.exec()
 

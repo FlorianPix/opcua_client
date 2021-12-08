@@ -22,6 +22,8 @@ class Frame3(QWidget):
         self.labels_layout = QHBoxLayout(self)
         self.target_widget = QWidget(self)
         self.target_layout = QHBoxLayout(self)
+        self.abort_widget = QWidget(self)
+        self.abort_layout = QHBoxLayout(self)
         self.layout = QVBoxLayout(self)
 
         self.sliders = [self.create_slider(0), self.create_slider(1), self.create_slider(2)]
@@ -34,6 +36,7 @@ class Frame3(QWidget):
         self.target_prefix = self.create_label("Soll")
         self.target = self.create_edit()
         self.target_postfix = self.create_label("mm")
+        self.abort = self.create_button("Abbrechen")
 
     def propify(self):
         for i in self.props:
@@ -80,6 +83,11 @@ class Frame3(QWidget):
             self.target_postfix.setStyleSheet(fh.read())
             self.target_layout.addWidget(self.target_postfix)
 
+        qss_path = "frames/frame3/button.qss"
+        with open(qss_path, "r") as fh:
+            self.abort.setStyleSheet(fh.read())
+            self.abort_layout.addWidget(self.abort)
+
         self.sliders_widget.setLayout(self.sliders_layout)
         self.layout.addWidget(self.sliders_widget)
         self.info_widget.setLayout(self.info_layout)
@@ -92,6 +100,8 @@ class Frame3(QWidget):
         self.layout.addWidget(self.labels_widget)
         self.target_widget.setLayout(self.target_layout)
         self.layout.addWidget(self.target_widget)
+        self.abort_widget.setLayout(self.abort_layout)
+        self.layout.addWidget(self.abort_widget)
         self.setLayout(self.layout)
 
     def value_changed(self, nr, i):
@@ -146,13 +156,23 @@ class Frame3(QWidget):
         widget = QLineEdit()
         widget.setFont(font)
         widget.setAlignment(Qt.AlignRight)
-        widget.returnPressed.connect(lambda: self.parent.change_frame(4, props=self.props))
+        widget.returnPressed.connect(lambda: self.parent.change_frame(4, props=self.props + [self.sliders[0].value(), self.sliders[1].value()]))
         widget.textEdited.connect(self.text_changed)
         return widget
 
     def text_changed(self, text):
         if len(self.props) == 3:
-            self.props[2] = text
+            self.props[2] = int(text)
         else:
-            self.props.append(text)
+            self.props.append(int(text))
+
+    def create_button(self, text):
+        font = QtGui.QFont()
+        font.setPointSize(36)
+        widget = QPushButton()
+        widget.setText(str(text))
+        widget.setFont(font)
+        widget.clicked.connect(lambda: self.parent.change_frame(0))
+        return widget
+
 

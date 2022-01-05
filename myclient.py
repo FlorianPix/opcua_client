@@ -1,4 +1,6 @@
 from opcua import Client
+from opcua import ua
+from opcua.ua import DataValue
 
 from subhandler import SubHandler
 
@@ -25,6 +27,7 @@ class MyClient:
             self.sub_fuell1_ist = self.subscribe_to_node(self.node_dict['Schneider/Fuellstand1_Ist'], self.default_interval)
             self.sub_fuell2_ist = self.subscribe_to_node(self.node_dict['Schneider/Fuellstand2_Ist'], self.default_interval)
             self.sub_fuell3_ist = self.subscribe_to_node(self.node_dict['Schneider/Fuellstand3_Ist'], self.default_interval)
+            self.sub_fuells = [self.sub_fuell1_ist, self.sub_fuell2_ist, self.sub_fuell3_ist]
 
             """
             # durchfluss
@@ -40,8 +43,8 @@ class MyClient:
             self.connected = True
 
         except BaseException as err:
-            print(err)
             print('Failed to connect to server!')
+            raise Exception(err)
 
     def init_node_dict(self):
         # fill node dict with available nodes
@@ -60,3 +63,6 @@ class MyClient:
         sub = self.client.create_subscription(interval_in_ms, handler)
         sub.subscribe_data_change(variable)
         return handler
+
+    def set(self, node_name, value):
+        self.node_dict[node_name].set_attribute(ua.AttributeIds.Value, ua.DataValue(value))

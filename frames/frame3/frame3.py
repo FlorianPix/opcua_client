@@ -183,10 +183,15 @@ class Frame3(QWidget):
                     self.props.append(content)
                 except ValueError as err:
                     print(err)
-
-            self.props.append(self.chosen_sliders[0].value())
-            self.props.append(self.chosen_sliders[1].value())
-            self.parent.change_frame(4, props=self.props)
+            if self.chosen_sliders[0].value() - content >= 0:
+                if self.chosen_sliders[1].value() + content <= 250:
+                    self.props.append(self.chosen_sliders[0].value())
+                    self.props.append(self.chosen_sliders[1].value())
+                    self.parent.change_frame(4, props=self.props)
+                else:
+                    print("Im Zielbehälter ist nicht genügend Platz für das angegebene Soll.")
+            else:
+                print("Im Startbehälter ist nicht genügend Flüssigkeit für das angegebene Soll.")
         except ValueError as err:
             correction = re.sub("[^0-9]", "", self.target.text())
             self.target.setText(correction)
@@ -196,12 +201,12 @@ class Frame3(QWidget):
             try:
                 self.props[2] = int(text)
             except ValueError as err:
-                print(err)
+                pass
         else:
             try:
                 self.props.append(int(text))
             except ValueError as err:
-                print(err)
+                pass
 
     def create_button(self, text):
         font = QtGui.QFont()

@@ -1,4 +1,5 @@
 import ctypes
+from turtle import distance
 import _ctypes
 import pygame
 import pygame.freetype
@@ -11,8 +12,8 @@ from queue import Empty, Queue
 from dataclasses import dataclass
 from pykinect2 import PyKinectV2, PyKinectRuntime
 from pykinect2.PyKinectV2 import *
-from PySide2.QtCore import QObject, Signal, Slot
-from PySide2.QtWidgets import QApplication
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
+from PyQt5.QtWidgets import QApplication
 
 
 if sys.hexversion >= 0x03000000:
@@ -31,10 +32,10 @@ SKELETON_COLORS = [pygame.color.THECOLORS["red"],
 
 
 class BodyGameRuntime(QObject):
-    swipe_signal = Signal(str, str)
-    hand_gesture_signal = Signal(str, str)
-    get_status_signal = Signal(dict)
-    request_status_signal = Signal(dict)
+    swipe_signal = pyqtSignal(str, str)
+    hand_gesture_signal = pyqtSignal(str, str)
+    get_status_signal = pyqtSignal(dict)
+    request_status_signal = pyqtSignal(dict)
 
     def __init__(self, fps, hand_data_queue):
         super().__init__() 
@@ -62,6 +63,7 @@ class BodyGameRuntime(QObject):
         self.right_hand_gesture = None
         self.fps = fps
         self.hand_data_queue = hand_data_queue
+
 
     def timed_call(self, callback, calls_per_second):
         time_time = time.time
@@ -93,8 +95,6 @@ class BodyGameRuntime(QObject):
 
         try:
             pygame.draw.line(self._frame_surface, color, start, end, 8)
-
-            print(PyKinect)
         except: # need to catch it due to possible invalid positions (with inf)
             pass
 
@@ -185,14 +185,19 @@ class BodyGameRuntime(QObject):
         # --- Limit to self.fps frames per second
         self._clock.tick(self.fps)
 
+    def set_disabled_area(self, area):
+        self.right_hand.disabled_area = area
+        self.left_hand.disabled_area = area
+
     def detect_gestures(self, joint_points, hand_left_state, hand_right_state):
-        #print(abs(joint_points[PyKinectV2.JointType_HandLeft].x - joint_points[PyKinectV2.JointType_SpineShoulder].x))
+        #print((joint_points[PyKinectV2.JointType_HandRight].x - joint_points[PyKinectV2.JointType_SpineShoulder].x))
         self.right_hand.update_series(joint_points[PyKinectV2.JointType_HandRight].x, joint_points[PyKinectV2.JointType_HandRight].y, joint_points[PyKinectV2.JointType_SpineShoulder].x, hand_right_state)
         self.status["right"] = self.right_hand.update_status()
         if self.status["right"]["swipe"]:
             self.swipe_signal.emit("right", self.status["right"]["swipe"])
-        gesture = self.status['right']['hand_gesture']
-        if gesture:
+        
+        if not None in self.status['right']['hand_gesture']:
+            gesture = self.status['right']['hand_gesture'][0]
             if not gesture == self.right_hand_gesture:
                 self.hand_gesture_signal.emit("right", gesture)
                 self.right_hand_gesture = gesture
@@ -202,8 +207,9 @@ class BodyGameRuntime(QObject):
         if self.status["left"]["swipe"]:
             self.swipe_signal.emit("left", self.status["left"]["swipe"])
 
-        gesture = self.status['left']['hand_gesture']
-        if gesture:
+        
+        if not None in self.status['left']['hand_gesture']:
+            gesture = self.status['left']['hand_gesture'][0]
             if not gesture == self.left_hand_gesture:
                 self.hand_gesture_signal.emit("left", gesture)
                 self.left_hand_gesture = gesture
@@ -224,14 +230,15 @@ class BodyPoint:
 class GestureDetector:
    
     def __init__(self, y_min, y_max) -> None:
-       
+        self.disabled_area = None
         self.point_series = [None] * 30
         self.dead_time = 30
         self.calibration = [y_min, y_max]
         self.hand_status = {
             "percentage": 0,
             "swipe" : None,
-            "hand_gesture" : None 
+            "hand_gesture" : [None, None],
+            "hand_area" : 0 
         }
 
     def update_series(self, x_hand, y_hand, x_central, status):
@@ -239,10 +246,16 @@ class GestureDetector:
         self.point_series.pop()
         self.dead_time = self.dead_time - 1
 
+
     def update_status(self):
         self.hand_status["swipe"] = self.swipe_action(self.point_series)
         self.hand_status["percentage"] = self.current_percentage(self.point_series[0].y)
-        self.hand_status["hand_gesture"] = self.hand_gesture(self.point_series)
+        tmp = self.hand_status["hand_gesture"][0]
+        self.hand_status["hand_gesture"][0] = self.hand_gesture(self.point_series)
+        if not (tmp == self.hand_status["hand_gesture"][0]):
+            self.hand_status["hand_gesture"][1] = tmp
+
+        self.hand_status["hand_area"] = self.hand_in_area(self.point_series[0])
         return self.hand_status
 
     def swipe_action(self, point_series):
@@ -264,6 +277,8 @@ class GestureDetector:
                         return "right"
         return None
 
+
+
     def check_straight_swipe(self, point_series):
         x1 = point_series[0].x
         y1 = point_series[0].y
@@ -282,12 +297,12 @@ class GestureDetector:
 
     def hand_gesture(self, point_series):
         if not None in point_series:
-            valid_area = self.hand_in_area(point_series)
+            #valid_area = self.hand_in_area(point_series)
+            valid_area = True
             if valid_area:
                 any_check = []
                 for point in point_series:
-                    any_check.append(point.status)
-                
+                    any_check.append(point.status)   
                 if any_check.count(2) >= len(any_check)-5:
                     return "open"
                 if  any_check.count(3) >= len(any_check)-5:
@@ -296,58 +311,84 @@ class GestureDetector:
                     return "thumbs"
         return 'undefined'
 
-    def hand_in_area(self, point_series):
-        for point in point_series:
-            if not (abs(point.x - point.central) < 450):
-                return False;
+    def hand_in_area(self, point):
+        if point is not None:
             if not (point.y > self.calibration[0] and point.y < self.calibration[1]):
-                return False
-        return True       
+                 return None
+            distance = point.x - point.central
+            if self.disabled_area == None:
+                if (distance <= 300):
+                    return 0
+                if (distance > 300 and distance <= 550):
+                    return 1
+                if (distance > 550):
+                    return 2 
+            else:
+                if self.disabled_area == 0:
+                    if (distance <= 400):
+                        return 1
+                    else:
+                        return 2
+                if self.disabled_area == 1:
+                    if (distance <= 400):
+                        return 0
+                    else:
+                        return 2
+                if self.disabled_area == 2:
+                    if (distance <= 400):
+                        return 0
+                    else:
+                        return 1
+            return None
 
     def current_percentage(self, value):
         percentage = self.convert_to_percent(value)
         if percentage > 100:
             return 100
-        elif percentage < 100:
+        elif percentage < 0:
             return 0
         return percentage
     
     def convert_to_percent(self, value):
-        percentage = 100/(self.calibration[1]-self.calibration[0]) * (self.calibration[1] - value)
+        percentage = round(100/(self.calibration[1]-self.calibration[0]) * (self.calibration[1] - value),1)
         if math.isinf(percentage):
             return 0
         return percentage
 
 
-"""
-is called when a swipe has been detected
-side:       which hand - str: left, right
-direction:  swipe direction - str: left, right
-"""
-@Slot(str)
-def swipe_detected(side, direction):
-    print(f"{side} Hand: {direction} swipe")
-    pass
-    
-"""
-is called when a hand gesture has been detected (open, closed thumbs up)
-side:       which hand - str: left, right
-gesture:    hand state - str: open, closed, thumbs
-"""
-@Slot(str)
-def hand_gesture_detected(side, gesture):
-    print(f"{side} Hand: {gesture} detected")
-    pass
 
-def kinect_thread(request_status):
-    game = BodyGameRuntime(20, request_status);
-    game.swipe_signal.connect(swipe_detected)
-    game.hand_gesture_signal.connect(hand_gesture_detected)
-    while not game._done:
-        game.run()
 
 
 if __name__ == "__main__":
+    def kinect_thread_runner(request_status):
+        game = BodyGameRuntime(20, request_status);
+        game.swipe_signal.connect(swipe_detected)
+        game.hand_gesture_signal.connect(hand_gesture_detected)
+        while not game._done:
+            game.run()
+
+    def get_hand_data():
+        try:
+            return hand_data.get_nowait()
+        except Empty as e:
+            return None
+
+    @pyqtSlot(str, str)
+    def swipe_detected(side, direction):
+        print(f"{side} Hand: {direction} swipe")
+        pass
+
+    @pyqtSlot(str, str)
+    def hand_gesture_detected(side, gesture):
+        print(f"{side} Hand: {gesture} detected")
+        data = get_hand_data()
+        if not data:
+            return
+        data = data[side]
+        if data["hand_gesture"][0] == "closed":
+            if not data["hand_gesture"][1] == "closed":
+                area = data["hand_area"]
+                print(area)  
     """
     hand_data dictionary contains dictionary with hand data:
     keys: left, right --> contains dictionary to corresponding hand
@@ -359,7 +400,7 @@ if __name__ == "__main__":
     """
     hand_data = Queue(maxsize=1)
 
-    kinect_thread = threading.Thread(target=kinect_thread, args=(hand_data,))
+    kinect_thread = threading.Thread(target=kinect_thread_runner, args=(hand_data,))
     kinect_thread.setDaemon(False)
     kinect_thread.start()
     time.sleep(7)

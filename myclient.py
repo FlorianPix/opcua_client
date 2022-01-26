@@ -1,6 +1,7 @@
 from opcua import Client
 from opcua import ua
 from opcua.ua import DataValue
+import sys
 
 from subhandler import SubHandler
 
@@ -15,6 +16,7 @@ class MyClient:
         try:
             self.client = Client(self.server_address)
             self.client.connect()
+            
             self.client.load_type_definitions()
             self.root = self.client.get_root_node()
             self.objects = self.client.get_objects_node()
@@ -24,6 +26,7 @@ class MyClient:
             self.init_node_dict()
 
             # füllstände
+        
             self.sub_fuell1_ist = self.subscribe_to_node(self.node_dict['Schneider/Fuellstand1_Ist'], self.default_interval)
             self.sub_fuell2_ist = self.subscribe_to_node(self.node_dict['Schneider/Fuellstand2_Ist'], self.default_interval)
             self.sub_fuell3_ist = self.subscribe_to_node(self.node_dict['Schneider/Fuellstand3_Ist'], self.default_interval)
@@ -66,3 +69,11 @@ class MyClient:
 
     def set(self, node_name, value):
         self.node_dict[node_name].set_attribute(ua.AttributeIds.Value, ua.DataValue(value))
+
+
+if __name__ == "__main__":
+    try:
+        self.client = MyClient()
+    except BaseException as err:
+        print(err)
+        sys.exit()

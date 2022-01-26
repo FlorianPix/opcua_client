@@ -167,8 +167,18 @@ class Frame3(QWidget):
         widget.setFont(font)
         widget.setAlignment(Qt.AlignRight)
         widget.returnPressed.connect(self.entered)
-        widget.textEdited.connect(self.text_changed)
+        widget.textChanged.connect(self.text_changed)
         return widget
+
+    def percent_to_value(self, percent):
+        available_target_volume = 250 - self.chosen_sliders[1].value()
+        available_start_volume =  self.chosen_sliders[0].value()
+        if available_start_volume >= available_target_volume:
+            choosable_volume = available_target_volume
+        else:
+            choosable_volume = available_start_volume
+        volume = percent*choosable_volume/100
+        self.target.setText(str(round(volume)))
 
     def entered(self):
         try:
@@ -193,6 +203,7 @@ class Frame3(QWidget):
             else:
                 print("Im Startbehälter ist nicht genügend Flüssigkeit für das angegebene Soll.")
         except ValueError as err:
+            print(err)
             correction = re.sub("[^0-9]", "", self.target.text())
             self.target.setText(correction)
 

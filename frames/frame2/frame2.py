@@ -25,6 +25,14 @@ class Frame2(QWidget):
         self.slider2 = self.create_slider(2)
         self.sliders = [self.slider0, self.slider1, self.slider2]
 
+
+        qss_path = "frames/frame1/slider_highlight.qss"
+        with open(qss_path, "r") as fh:
+            self.highlight_style = fh.read()
+        qss_path = "frames/frame1/slider.qss"
+        with open(qss_path, "r") as fh:
+            self.not_highlight_style = fh.read()
+
         for slider in self.sliders:
             qss_path = "frames/frame2/slider.qss"
             with open(qss_path, "r") as fh:
@@ -74,6 +82,14 @@ class Frame2(QWidget):
         self.layout.addWidget(self.labels_widget)
         self.setLayout(self.layout)
 
+        
+    def highlight(self, highlight_index):
+        for i, sliders in enumerate(self.sliders):
+            if i == highlight_index:
+                sliders.setStyleSheet(self.highlight_style)
+            else:
+                sliders.setStyleSheet(self.not_highlight_style)
+    
     def value_changed(self, nr, i):
         # print(nr)
         # print(i)

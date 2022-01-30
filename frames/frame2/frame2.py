@@ -70,6 +70,7 @@ class Frame2(QWidget):
             button.setDisabled(True)
         qss_path = "frames/frame2/slider_highlight.qss"
         with open(qss_path, "r") as fh:
+            self.parent.statusBar().showMessage(u"Behälter {} ausgewählt".format(self.props[0] + 1), 10000)
             self.sliders[self.props[0]].setStyleSheet(fh.read())
 
         self.sliders_widget.setLayout(self.sliders_layout)

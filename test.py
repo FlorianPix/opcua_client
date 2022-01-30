@@ -34,7 +34,6 @@ if __name__ == "__main__":
     client.load_type_definitions()
     root = client.get_root_node()
 
-    """    
     node_dict = init_nodes(root, node_dict)
     print(node_dict['Schneider/Fuellstand1_Ist'].get_value())
     hand = subscribe_to_node(client, node_dict['Schneider/Fuellstand2_Ist'], 100)
@@ -45,8 +44,3 @@ if __name__ == "__main__":
     while True:
         if hand.hasChanged():
             print(hand.getVar())
-    """
-
-
-
-

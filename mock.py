@@ -66,7 +66,6 @@ class MainWindow(QMainWindow):
 
 
     def change_frame(self, widget_index, props=None):
-        print(props)
         self.widget = self.widgets[widget_index](self)
         if props:
             self.widget.props = props
@@ -77,7 +76,7 @@ class MainWindow(QMainWindow):
         if widget_index == 0:
             self.directions = [0, 0, 0]
         self.setCentralWidget(self.widget)
-        self.current_widget_number = widget_index        
+        self.current_widget_number = widget_index
 
     def update_values(self):
         for i in range(0, 3):
@@ -165,7 +164,7 @@ if __name__ == '__main__':
         kinect_thread.setDaemon(False)
         kinect_thread.start()
 
-  
+
     window.resize(1920, 1080)
     window.show()
 

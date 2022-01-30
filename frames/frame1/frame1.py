@@ -73,14 +73,6 @@ class Frame1(QWidget):
         self.layout.addWidget(self.labels_widget)
         self.parent.statusBar().showMessage(u"Umpumpen", 10000)
         self.setLayout(self.layout)
-
-    
-    def highlight(self, highlight_index):
-        for i, sliders in enumerate(self.sliders):
-            if i == highlight_index:
-                sliders.setStyleSheet(self.highlight_style)
-            else:
-                sliders.setStyleSheet(self.not_highlight_style)
     
     def value_changed(self, nr, i):
         # print(nr)
@@ -106,13 +98,12 @@ class Frame1(QWidget):
         self.sliders[slider_nr].setValue(p)
         self.labels[slider_nr].setText(str(p) + " mm")
 
-    def highlight(self, i, high):
-        if high:
-            qss_path = "frames/frame1/slider_highlight.qss"
-        else:
-            qss_path = "frames/frame1/slider.qss"
-        with open(qss_path, "r") as fh:
-            self.sliders[i].setStyleSheet(fh.read())
+    def highlight(self, highlight_index):
+        for i, sliders in enumerate(self.sliders):
+            if i == highlight_index:
+                sliders.setStyleSheet(self.highlight_style)
+            else:
+                sliders.setStyleSheet(self.not_highlight_style)
 
     def create_slider(self, i):
         widget = QSlider(Qt.Vertical)

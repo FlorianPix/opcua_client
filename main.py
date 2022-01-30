@@ -189,7 +189,7 @@ def kinect_thread_runner(fps, request_status):
 
 
 if __name__ == '__main__':
-    kinect_connected = False
+    kinect_connected = True
     done = False
 
     app = QApplication([])

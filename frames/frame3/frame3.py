@@ -50,6 +50,7 @@ class Frame3(QWidget):
 
         for slider in self.chosen_sliders:
             qss_path = "frames/frame3/slider.qss"
+            self.parent.statusBar().showMessage(u"Behälter {} ausgewählt".format(self.props[1] + 1), 10000)
             with open(qss_path, "r") as fh:
                 slider.setStyleSheet(fh.read())
             self.sliders_layout.addWidget(slider)
@@ -190,8 +191,10 @@ class Frame3(QWidget):
                     self.parent.change_frame(4, props=self.props)
                 else:
                     print("Im Zielbehälter ist nicht genügend Platz für das angegebene Soll.")
+                    self.parent.statusBar().showMessage(u"Im Zielbehälter ist nicht genügend Platz für das angegebene Soll.", 10000)
             else:
                 print("Im Startbehälter ist nicht genügend Flüssigkeit für das angegebene Soll.")
+                self.parent.statusBar().showMessage(u"Im Startbehälter ist nicht genügend Flüssigkeit für das angegebene Soll.", 10000)
         except ValueError as err:
             correction = re.sub("[^0-9]", "", self.target.text())
             self.target.setText(correction)

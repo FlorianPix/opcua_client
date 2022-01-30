@@ -122,6 +122,7 @@ class Frame4(QWidget):
         self.layout.addWidget(self.actual_widget)
         self.abort_widget.setLayout(self.abort_layout)
         self.layout.addWidget(self.abort_widget)
+        self.parent.statusBar().showMessage(u"Umpumpen gestartet", 10000)
         self.setLayout(self.layout)
 
     def value_changed(self, nr, i):
@@ -153,6 +154,7 @@ class Frame4(QWidget):
             text = self.props[2] + diff
             self.actual.setText(str(text))
             if abs(diff) <= 0:
+                self.parent.statusBar().showMessage(u"Umpumpen beendet", 10000)
                 self.parent.change_frame(0)
 
     def create_slider(self, i):

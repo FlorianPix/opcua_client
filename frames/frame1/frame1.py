@@ -61,6 +61,7 @@ class Frame1(QWidget):
         self.layout.addWidget(self.buttons_widget)
         self.labels_widget.setLayout(self.labels_layout)
         self.layout.addWidget(self.labels_widget)
+        self.parent.statusBar().showMessage(u"Umpumpen", 10000)
         self.setLayout(self.layout)
 
     def value_changed(self, nr, i):
@@ -86,6 +87,14 @@ class Frame1(QWidget):
     def set_slider_position(self, slider_nr, p):
         self.sliders[slider_nr].setValue(p)
         self.labels[slider_nr].setText(str(p) + " mm")
+
+    def highlight(self, i, high):
+        if high:
+            qss_path = "frames/frame1/slider_highlight.qss"
+        else:
+            qss_path = "frames/frame1/slider.qss"
+        with open(qss_path, "r") as fh:
+            self.sliders[i].setStyleSheet(fh.read())
 
     def create_slider(self, i):
         widget = QSlider(Qt.Vertical)

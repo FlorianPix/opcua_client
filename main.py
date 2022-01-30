@@ -22,8 +22,10 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("IAT control by gesture")
+        self.directions = [0, 0, 0]
         self.volumes = [125, 125, 125]
         self.props = []
+        self.simulation = True
         try:
             self.client = MyClient()
         except BaseException as err:
@@ -83,23 +85,37 @@ class MainWindow(QMainWindow):
         self.widget = self.widgets[widget_index](self)
         if widget_index == 0:
             self.client.set('Schneider/Start_Umpumpen_FL', False)
+            self.directions = [0, 0, 0]
         elif props:
             self.widget.props = props
             self.widget.propify()
             if len(props) > 3:
                 self.props = props
-                self.client.set('Schneider/Behaelter_A_FL', props[0]+1)
-                self.client.set('Schneider/Behaelter_B_FL', props[1]+1)
-                self.client.set('Schneider/Start_Umpumpen_FL', True)
+                if self.simulation:
+                    self.directions[props[0]] = -1
+                    self.directions[props[1]] = 1
+                else:
+                    self.client.set('Schneider/Behaelter_A_FL', props[0]+1)
+                    self.client.set('Schneider/Behaelter_B_FL', props[1]+1)
+                    self.client.set('Schneider/Start_Umpumpen_FL', True)
         self.setCentralWidget(self.widget)
 
     def update_values(self):
-        if self.client.sub_fuell1_ist.hasChanged():
-            self.volumes[0] = int(self.client.sub_fuell1_ist.getVar())
-        if self.client.sub_fuell2_ist.hasChanged():
-            self.volumes[1] = int(self.client.sub_fuell2_ist.getVar())
-        if self.client.sub_fuell3_ist.hasChanged():
-            self.volumes[2] = int(self.client.sub_fuell3_ist.getVar())
+        if self.simulation:
+            for i in range(0, 3):
+                if self.directions[i] > 0:
+                    if self.volumes[i] < 250:
+                        self.volumes[i] += self.directions[i]
+                else:
+                    if self.volumes[i] > 0:
+                        self.volumes[i] += self.directions[i]
+        else:
+            if self.client.sub_fuell1_ist.hasChanged():
+                self.volumes[0] = int(self.client.sub_fuell1_ist.getVar())
+            if self.client.sub_fuell2_ist.hasChanged():
+                self.volumes[1] = int(self.client.sub_fuell2_ist.getVar())
+            if self.client.sub_fuell3_ist.hasChanged():
+                self.volumes[2] = int(self.client.sub_fuell3_ist.getVar())
 
 
 if __name__ == '__main__':

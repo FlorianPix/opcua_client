@@ -1,9 +1,9 @@
 import functools
-from random import randrange, randint
 
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMainWindow, QApplication, QAction, qApp
 from PyQt5.QtCore import pyqtSlot
+
 import global_style
 from frames.frame1.frame1 import Frame1
 from frames.frame2.frame2 import Frame2
@@ -132,9 +132,6 @@ class MainWindow(QMainWindow):
                         self.widget.entered()
 
     def get_hand_data(self):
-        #if not self.hand_data:
-        #    print("waiting for data")
-        #    self.hand_data = hand_data.get()
         try:
             self.hand_data = hand_data.get_nowait()
         except Empty as e:
@@ -151,6 +148,7 @@ def kinect_thread_runner(fps, request_status):
             game.set_disabled_area(window.widget.props[0])
         if window.current_widget_number == 1:
             game.set_disabled_area(None)
+
 
 if __name__ == '__main__':
     kinect_connected = True
@@ -176,7 +174,5 @@ if __name__ == '__main__':
     timer_gui.timeout.connect(window.update_gui)
     timer_gui.start(35)
 
-
     app.exec()
     done = True
-

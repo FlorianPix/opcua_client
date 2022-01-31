@@ -1,0 +1,6 @@
+﻿PyQt5==5.15.6
+pygame==2.1.2
+pykinect2==0.1.0
+lxml==4.6.4
+opcua==0.98.13
+numpy==1.22.1

@@ -6,7 +6,7 @@ from opcua import ua, uamethod, Server
 Server endpoint definition
 Defines how the server can be reached and stores the path for the custom Namespace xml file
 """
-namespace = "Namespace/myNS.xml"
+namespace = "Namespace/my_namespace.xml"
 uri = "http://tu-dresden.de/iat-opc/"
 name = "IAT OPC Server"
 endpoint = "opc.tcp://localhost:4840/freeopcua/server/"

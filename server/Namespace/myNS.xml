@@ -9,6 +9,7 @@
     <Aliases>
         <Alias Alias="Boolean">i=1</Alias>
         <Alias Alias="UInt32">i=7</Alias>
+        <Alias Alias="Float">i=10</Alias>
         <Alias Alias="String">i=12</Alias>
         <Alias Alias="HasModellingRule">i=37</Alias>
         <Alias Alias="HasTypeDefinition">i=40</Alias>
@@ -23,524 +24,102 @@
                        Version="1.3.4"/>
         </Extension>
     </Extensions>
-    <!--
-    <UAReferenceType NodeId="ns=1;i=4001" BrowseName="1:providesInputTo">
-        <DisplayName>providesInputTo</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">
-                i=33
-            </Reference>
-        </References>
-        <InverseName Locale="en-US">inputProcidedBy</InverseName>
-    </UAReferenceType>
 
--->
-    <UAObjectType IsAbstract="true" NodeId="ns=1;i=1001"
-                  BrowseName="1:Device-Type">
-        <DisplayName>DeviceType</DisplayName>
+    <UAObjectType NodeId="ns=1;i=1001" BrowseName="1:XML DA Server - eats11">
+        <DisplayName>XML DA Server - eats11</DisplayName>
         <References>
             <Reference ReferenceType="HasSubtype" IsForward="false">
-                i=58
+                i=61
+            </Reference>
+            <Reference ReferenceType="HasComponent">ns=1;i=1002</Reference>
+        </References>
+    </UAObjectType>
+
+    <UAObjectType NodeId="ns=1;i=1002" BrowseName="1:Schneider">
+        <DisplayName>Schneider</DisplayName>
+        <References>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+            <Reference ReferenceType="HasSubtype" IsForward="false">
+                i=61
             </Reference>
         </References>
     </UAObjectType>
 
-    <UAVariable DataType="UInt32" ParentNodeId="ns=1;i=1001"
-                NodeId="ns=1;i=1011" BrowseName="1:Device-ID"
+    <UAVariable DataType="Float" ParentNodeId="ns=1;i=1002"
+                NodeId="ns=1;i=2001" BrowseName="1:Schneider/Fuellstand1_Ist"
                 UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Device-ID</DisplayName>
+        <DisplayName>Fuellstand1_Ist</DisplayName>
         <References>
             <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
             <Reference ReferenceType="HasModellingRule">i=78</Reference>
             <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=1001
+                ns=1;i=1002
             </Reference>
         </References>
     </UAVariable>
 
-    <UAVariable DataType="String" ParentNodeId="ns=1;i=1001"
-                NodeId="ns=1;i=1012" BrowseName="1:Device-Name"
+    <UAVariable DataType="Float" ParentNodeId="ns=1;i=1002"
+                NodeId="ns=1;i=2002" BrowseName="1:Schneider/Fuellstand2_Ist"
                 UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Device-Name</DisplayName>
+        <DisplayName>Fuellstand2_Ist</DisplayName>
         <References>
             <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
             <Reference ReferenceType="HasModellingRule">i=78</Reference>
             <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=1001
+                ns=1;i=1002
             </Reference>
         </References>
     </UAVariable>
 
-    <UAVariable DataType="String" ParentNodeId="ns=1;i=1001"
-                NodeId="ns=1;i=1013" BrowseName="1:Device-Manufacturer"
+    <UAVariable DataType="Float" ParentNodeId="ns=1;i=1002"
+                NodeId="ns=1;i=2003" BrowseName="1:Schneider/Fuellstand3_Ist"
                 UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Device-Manufacturer</DisplayName>
+        <DisplayName>Fuellstand3_Ist</DisplayName>
         <References>
             <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
             <Reference ReferenceType="HasModellingRule">i=78</Reference>
             <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=1001
+                ns=1;i=1002
             </Reference>
         </References>
     </UAVariable>
 
-    <UAVariable DataType="String" ParentNodeId="ns=1;i=1001"
-                NodeId="ns=1;i=1014" BrowseName="1:Device-Model"
+    <UAVariable DataType="UInt16" ParentNodeId="ns=1;i=1002"
+                NodeId="ns=1;i=2004" BrowseName="1:Schneider/Behaelter_A_FL"
                 UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Device-Model</DisplayName>
+        <DisplayName>Behaelter_A_FL</DisplayName>
         <References>
             <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
             <Reference ReferenceType="HasModellingRule">i=78</Reference>
             <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=1001
+                ns=1;i=1002
             </Reference>
         </References>
     </UAVariable>
 
-    <UAObjectType NodeId="ns=1;i=1101" BrowseName="1:Sewing-Machine-Type">
-        <DisplayName>Sewing-Machine-Type</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">
-                ns=1;i=1001
-            </Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=1201</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=2001</Reference>
-        </References>
-    </UAObjectType>
-
-    <UAObjectType NodeId="ns=1;i=1201" BrowseName="1:Sensor-System-Type">
-        <DisplayName>Sensor-System-Type</DisplayName>
-        <References>
-            <Reference ReferenceType="HasComponent">ns=1;i=5001</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=1211</Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=1101</Reference>
-            <Reference ReferenceType="HasSubtype" IsForward="false">
-                ns=1;i=1001
-            </Reference>
-        </References>
-    </UAObjectType>
-
-    <UAVariable DataType="Float" ParentNodeId="ns=1;i=1201"
-                NodeId="ns=1;i=1211" BrowseName="1:Sample-Frequency"
+    <UAVariable DataType="UInt16" ParentNodeId="ns=1;i=1002"
+                NodeId="ns=1;i=2005" BrowseName="1:Schneider/Behaelter_B_FL"
                 UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Sample-Frequency</DisplayName>
+        <DisplayName>Behaelter_B_FL</DisplayName>
         <References>
             <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
             <Reference ReferenceType="HasModellingRule">i=78</Reference>
             <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=1201
+                ns=1;i=1002
             </Reference>
         </References>
     </UAVariable>
 
-    <UAObjectType NodeId="ns=1;i=2001" BrowseName="1:Template-Type">
-        <DisplayName>Template-Type</DisplayName>
-        <References>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=3001</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=4001</Reference>
-            <Reference ReferenceType="HasSubtype" IsForward="false">
-                i=58
-            </Reference>
-        </References>
-    </UAObjectType>
-
-    <UAObjectType NodeId="ns=1;i=3001" BrowseName="1:Filter-Data-Processing-Type">
-        <DisplayName>Filter-Data-Processing-Type</DisplayName>
-        <References>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=3101</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=3201</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=3301</Reference>
-            <Reference ReferenceType="HasSubtype" IsForward="false">
-                i=58
-            </Reference>
-        </References>
-    </UAObjectType>
-
-    <UAObjectType NodeId="ns=1;i=3101" BrowseName="1:Filter-Type">
-        <DisplayName>Filter-Type</DisplayName>
-        <References>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=3111</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=3112</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=3113</Reference>
-            <Reference ReferenceType="HasSubtype" IsForward="false">
-                i=58
-            </Reference>
-        </References>
-    </UAObjectType>
-
-    <UAVariable DataType="UInt16" ParentNodeId="ns=1;i=3101"
-                NodeId="ns=1;i=3111" BrowseName="1:Type"
+    <UAVariable DataType="Boolean" ParentNodeId="ns=1;i=1002"
+                NodeId="ns=1;i=2006" BrowseName="1:Schneider/Start_Umpumpen_FL"
                 UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Type</DisplayName>
+        <DisplayName>Start_Umpumpen_FL</DisplayName>
         <References>
             <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
             <Reference ReferenceType="HasModellingRule">i=78</Reference>
             <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=3101
+                ns=1;i=1002
             </Reference>
-        </References>
-    </UAVariable>
-
-    <UAVariable DataType="Float" ParentNodeId="ns=1;i=3101"
-                NodeId="ns=1;i=3112" BrowseName="1:A"
-                UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>A</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=3101
-            </Reference>
-        </References>
-    </UAVariable>
-
-    <UAVariable DataType="UInt16" ParentNodeId="ns=1;i=3101"
-                NodeId="ns=1;i=3113" BrowseName="1:FG"
-                UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>FG</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=3101
-            </Reference>
-        </References>
-    </UAVariable>
-
-    <UAObjectType NodeId="ns=1;i=3201" BrowseName="1:Stitch-Finder-Type">
-        <DisplayName>Stitch-Finder-Type</DisplayName>
-        <References>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=3211</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=3212</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=3213</Reference>
-            <Reference ReferenceType="HasSubtype" IsForward="false">
-                i=58
-            </Reference>
-        </References>
-    </UAObjectType>
-
-    <UAVariable DataType="Float" ParentNodeId="ns=1;i=3201"
-                NodeId="ns=1;i=3211" BrowseName="1:Stitch-Threshold"
-                UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Stitch-Threshold</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=3201
-            </Reference>
-        </References>
-    </UAVariable>
-
-    <UAVariable DataType="Float" ParentNodeId="ns=1;i=3201"
-                NodeId="ns=1;i=3212" BrowseName="1:Idle-Threshold"
-                UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Idle-Threshold</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=3201
-            </Reference>
-        </References>
-    </UAVariable>
-
-    <UAVariable DataType="Float" ParentNodeId="ns=1;i=3201"
-                NodeId="ns=1;i=3213" BrowseName="1:Stitch-Max-Time"
-                UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Stitch-Max-Time</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=3201
-            </Reference>
-        </References>
-    </UAVariable>
-
-    <UAObjectType NodeId="ns=1;i=3301" BrowseName="1:Stitch-Analyzer-Type">
-        <DisplayName>Stitch-Analyzer-Type</DisplayName>
-        <References>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=3311</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=3312</Reference>
-            <Reference ReferenceType="HasSubtype" IsForward="false">
-                i=58
-            </Reference>
-        </References>
-    </UAObjectType>
-
-    <UAVariable DataType="Float" ParentNodeId="ns=1;i=3301"
-                NodeId="ns=1;i=3311" BrowseName="1:Peak-Min-Height"
-                UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Peak-Min-Height</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=3301
-            </Reference>
-        </References>
-    </UAVariable>
-
-    <UAVariable DataType="Float" ParentNodeId="ns=1;i=3301"
-                NodeId="ns=1;i=3312" BrowseName="1:Peak-Spacing"
-                UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Peak-Spacing</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=3301
-            </Reference>
-        </References>
-    </UAVariable>
-
-    <UAObjectType NodeId="ns=1;i=4001" BrowseName="1:Sewing-Configuration-Type">
-        <DisplayName>Sewing-Configuration-Type</DisplayName>
-        <References>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=4011</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=4012</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=4013</Reference>
-            <Reference ReferenceType="HasSubtype" IsForward="false">
-                i=58
-            </Reference>
-        </References>
-    </UAObjectType>
-
-    <UAVariable NodeId="ns=1;i=4011" BrowseName="Yarn" ParentNodeId="ns=1;i=4001" DataType="i=7594" ValueRank="1" ArrayDimensions="0">
-    <DisplayName>Yarn</DisplayName>
-    <References>
-      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
-      <Reference ReferenceType="HasModellingRule">i=78</Reference>
-      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=4001</Reference>
-    </References>
-    <Value>
-      <ListOfExtensionObject xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">
-        <ExtensionObject>
-          <TypeId>
-            <Identifier>i=7616</Identifier>
-          </TypeId>
-          <Body>
-            <EnumValueType>
-              <Value>0</Value>
-              <DisplayName>
-                <Locale>
-                </Locale>
-                <Text>Yarn1</Text>
-              </DisplayName>
-              <Description>
-                <Locale>
-                </Locale>
-                <Text>Most basic yarn.</Text>
-              </Description>
-            </EnumValueType>
-          </Body>
-        </ExtensionObject>
-        <ExtensionObject>
-          <TypeId>
-            <Identifier>i=7616</Identifier>
-          </TypeId>
-          <Body>
-            <EnumValueType>
-              <Value>1</Value>
-              <DisplayName>
-                <Locale>
-                </Locale>
-                <Text>Yarn3000</Text>
-              </DisplayName>
-              <Description>
-                <Locale>
-                </Locale>
-                <Text>Improved yarn.</Text>
-              </Description>
-            </EnumValueType>
-          </Body>
-        </ExtensionObject>
-        <ExtensionObject>
-          <TypeId>
-            <Identifier>i=7616</Identifier>
-          </TypeId>
-          <Body>
-            <EnumValueType>
-              <Value>2</Value>
-              <DisplayName>
-                <Locale>
-                </Locale>
-                <Text>Yarn1337</Text>
-              </DisplayName>
-              <Description>
-                <Locale>
-                </Locale>
-                <Text>Elite yarn.</Text>
-              </Description>
-            </EnumValueType>
-          </Body>
-        </ExtensionObject>
-      </ListOfExtensionObject>
-    </Value>
-  </UAVariable>
-
-  <UAVariable NodeId="ns=1;i=4012" BrowseName="Fabric" ParentNodeId="ns=1;i=4001" DataType="i=7594" ValueRank="1" ArrayDimensions="0">
-    <DisplayName>Fabric</DisplayName>
-    <References>
-      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
-      <Reference ReferenceType="HasModellingRule">i=78</Reference>
-      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=4001</Reference>
-    </References>
-    <Value>
-      <ListOfExtensionObject xmlns="http://opcfoundation.org/UA/2008/02/Types.xsd">
-        <ExtensionObject>
-          <TypeId>
-            <Identifier>i=7616</Identifier>
-          </TypeId>
-          <Body>
-            <EnumValueType>
-              <Value>0</Value>
-              <DisplayName>
-                <Locale>
-                </Locale>
-                <Text>Fabric1</Text>
-              </DisplayName>
-              <Description>
-                <Locale>
-                </Locale>
-                <Text>Most basic fabric.</Text>
-              </Description>
-            </EnumValueType>
-          </Body>
-        </ExtensionObject>
-        <ExtensionObject>
-          <TypeId>
-            <Identifier>i=7616</Identifier>
-          </TypeId>
-          <Body>
-            <EnumValueType>
-              <Value>1</Value>
-              <DisplayName>
-                <Locale>
-                </Locale>
-                <Text>Fabric3000</Text>
-              </DisplayName>
-              <Description>
-                <Locale>
-                </Locale>
-                <Text>Improved fabric.</Text>
-              </Description>
-            </EnumValueType>
-          </Body>
-        </ExtensionObject>
-        <ExtensionObject>
-          <TypeId>
-            <Identifier>i=7616</Identifier>
-          </TypeId>
-          <Body>
-            <EnumValueType>
-              <Value>2</Value>
-              <DisplayName>
-                <Locale>
-                </Locale>
-                <Text>Fabric1337</Text>
-              </DisplayName>
-              <Description>
-                <Locale>
-                </Locale>
-                <Text>Elite fabric.</Text>
-              </Description>
-            </EnumValueType>
-          </Body>
-        </ExtensionObject>
-      </ListOfExtensionObject>
-    </Value>
-  </UAVariable>
-
-  <UAVariable DataType="String" ParentNodeId="ns=1;i=4001"
-                NodeId="ns=1;i=4013" BrowseName="1:Needle-Properties"
-                UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Needle-Properties</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=4001
-            </Reference>
-        </References>
-    </UAVariable>
-
-    <UAObjectType NodeId="ns=1;i=5001" BrowseName="1:Measurement-Type">
-        <DisplayName>Measurement-Type</DisplayName>
-        <References>
-            <Reference ReferenceType="HasSubtype" IsForward="false">
-                i=58
-            </Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=5011</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=5012</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=5013</Reference>
-            <Reference ReferenceType="HasComponent">ns=1;i=5014</Reference>
-        </References>
-    </UAObjectType>
-
-    <UAVariable DataType="DateTime" ParentNodeId="ns=1;i=5001"
-                NodeId="ns=1;i=5011" BrowseName="1:TimeStamp"
-                UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>TimeStamp</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">
-                ns=1;i=5001
-            </Reference>
-        </References>
-    </UAVariable>
-
-    <UAVariable DataType="Float" ParentNodeId="ns=1;i=5001"
-                NodeId="ns=1;i=5012" BrowseName="1:Target-Stitch-Frequency"
-                UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Target-Stitch-Frequency</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>
-        </References>
-    </UAVariable>
-
-    <UAVariable DataType="Double" ParentNodeId="ns=1;i=5001"
-                NodeId="ns=1;i=5013" BrowseName="1:Measured-Values"
-                UserAccessLevel="3" AccessLevel="3" ValueRank="1">
-        <DisplayName>Measured-Values</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>
-        </References>
-    </UAVariable>
-
-    <UAVariable DataType="String" ParentNodeId="ns=1;i=5001"
-                NodeId="ns=1;i=5014" BrowseName="1:Stitch"
-                UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Stitch</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>
-        </References>
-    </UAVariable>
-
-    <UAVariable DataType="Float" ParentNodeId="ns=1;i=5001"
-                NodeId="ns=1;i=5014" BrowseName="1:Stitch"
-                UserAccessLevel="3" AccessLevel="3">
-        <DisplayName>Stitch</DisplayName>
-        <References>
-            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
-            <Reference ReferenceType="HasModellingRule">i=78</Reference>
-            <Reference ReferenceType="HasComponent" IsForward="false">ns=1;i=5001</Reference>
         </References>
     </UAVariable>
 </UANodeSet>

@@ -20,16 +20,16 @@ from queue import Queue, Empty
 
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, simulation=True):
         super().__init__()
 
         self.setWindowTitle("IAT control by gesture")
         self.directions = [0, 0, 0]
         self.volumes = [125, 125, 125]
         self.props = []
-        self.simulation = True
+        self.simulation = simulation
         try:
-            self.client = MyClient()
+            self.client = MyClient(simulation)
         except BaseException as err:
             print(err)
             sys.exit()
@@ -63,10 +63,12 @@ class MainWindow(QMainWindow):
 
         self.statusBar().showMessage(u"Übersicht", 10000)
 
-    def __del__(self):
+    def closeEvent(self, *args, **kwargs):
         if hasattr(self, 'client'):
             self.client.set('Schneider/Start_Umpumpen_FL', False)
             self.client.client.disconnect()
+        super(QMainWindow, self).closeEvent(*args, **kwargs)
+       
 
     def update(self):
         try:
@@ -89,6 +91,7 @@ class MainWindow(QMainWindow):
 
     def change_frame(self, widget_index, props=None):
         self.widget = self.widgets[widget_index](self)
+        print(self.props)
         if widget_index == 0:
             self.client.set('Schneider/Start_Umpumpen_FL', False)
             self.directions = [0, 0, 0]
@@ -142,10 +145,13 @@ class MainWindow(QMainWindow):
         print(f"{side} Hand: {direction} swipe")
         if (side == "left"):
             if (direction == "left"):
-                if self.current_widget_number in [2,3]:
+                if self.current_widget_number in [3]:
                     print("returning to last screen")
                     self.change_frame(self.current_widget_number - 1, self.widget.props[0:-1])
-                if self.current_widget_number in [4, 1]:
+                elif self.current_widget_number in [2]:
+                    print("returning to last screen")
+                    self.change_frame(self.current_widget_number - 1)
+                elif self.current_widget_number in [4, 1]:
                     print("returning to main view")
                     self.change_frame(0)
             if (direction == "right"):
@@ -190,11 +196,12 @@ def kinect_thread_runner(fps, request_status):
 
 if __name__ == '__main__':
     kinect_connected = True
+    simulation = False
     done = False
 
     app = QApplication([])
     app = global_style.set_style(app)
-    window = MainWindow()
+    window = MainWindow(simulation)
     if kinect_connected:
         hand_data = Queue(maxsize=1)
         kinect_thread = threading.Thread(target=kinect_thread_runner, args=(30, hand_data,))

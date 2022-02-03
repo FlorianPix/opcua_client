@@ -69,6 +69,7 @@ class MainWindow(QMainWindow):
         self.widget = self.widgets[widget_index](self)
         if props:
             self.widget.props = props
+            print(props)
             self.widget.propify()
             if len(props) > 3:
                 self.directions[props[0]] = -1

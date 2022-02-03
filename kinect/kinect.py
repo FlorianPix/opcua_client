@@ -170,7 +170,13 @@ class BodyGameRuntime(QObject):
                 # convert joint coordinates to color space 
                 joint_points = self._kinect.body_joints_to_color_space(joints)
                 self.draw_body(joints, joint_points, SKELETON_COLORS[i])
+
+            for i in range(0, self._kinect.max_body_count):
+                body = self._bodies.bodies[i]
+                if not body.is_tracked: 
+                    continue 
                 self.detect_gestures(joint_points, body.hand_left_state, body.hand_right_state)
+                break
 
         # --- copy back buffer surface pixels to the screen, resize it if needed and keep aspect ratio
         # --- (screen size may be different from Kinect's color frame size) 
@@ -315,13 +321,13 @@ class GestureDetector:
         if point is not None:
             if not (point.y > self.calibration[0] and point.y < self.calibration[1]):
                  return None
-            distance = point.x - point.central
+            distance = abs(point.x - point.central)
             if self.disabled_area == None:
                 if (distance <= 300):
                     return 0
-                if (distance > 300 and distance <= 550):
+                if (distance > 300 and distance <= 500):
                     return 1
-                if (distance > 550):
+                if (distance > 500):
                     return 2 
             else:
                 if self.disabled_area == 0:

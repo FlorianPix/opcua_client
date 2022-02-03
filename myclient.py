@@ -7,11 +7,13 @@ from subhandler import SubHandler
 
 
 class MyClient:
-    def __init__(self):
-        self.server_address = "opc.tcp://localhost:4840/freeopcua/server/"
-        self.uri = "http://tu-dresden.de/iat-opc/"
-        # self.server_address = "opc.tcp://141.30.154.211:4850"
-        # self.uri = "http://141.30.154.212:8087/OPC/DA"
+    def __init__(self, simulation):
+        if simulation:
+            self.server_address = "opc.tcp://localhost:4840/freeopcua/server/"
+            self.uri = "http://tu-dresden.de/iat-opc/"
+        else:
+            self.server_address = "opc.tcp://141.30.154.211:4850"
+            self.uri = "http://141.30.154.212:8087/OPC/DA"
         self.default_interval = 100
         self.connected = False
 

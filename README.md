@@ -14,7 +14,7 @@ Requirments: Python>=3.7 (has only been tested with Python3.8 but 3.7 should wor
 5. Download Kinect for Windows SDK 2.0 (https://www.microsoft.com/en-us/download/details.aspx?id=44561)
 6. Install KinectSDK-v2.0_1409-Setup.exe
 7. pip install -r requirements.txt
-8. see [Problem solving section](#3-bugs-and-how-to-solve-them)
+8. see [Problem solving section](#4-bugs-and-how-to-solve-them)
 
 When using a virtual environment activate it:
 ```cmd
@@ -43,7 +43,26 @@ of the official IfA "Kleinversuchsanlage" Server or to `False` otherwise.
 python .\main.py
 ```
 
-### 3. Bugs and how to solve them
+### 3. Possible Gestures and Control Flow:
+#### Possible gestures:
+**left hand:**
+- swipe left to change to next frame, only possible when on starting view  
+- swipe right to change back to previous frame, when pumping it stops pumping and returns to starting view instead
+
+**right hand:**
+- when not confirming a selection leave hand open!
+- selecting a tank:
+  - select tank via right hand x-movment
+  - confirm selected tank by closing open hand
+- choosing a volume:
+  - choose volume by moving open hand up and down
+  - confirm selected volume by closing open hand
+
+#### Control Frame Overview:
+View with white background to have readable text!
+![](doc/uml_sequence.png)
+
+### 4. Bugs and how to solve them
 PyKinect2 is not maintained anymore, here are 2 common fixes you should apply after install.  
 Python3.8 compatibility issues: https://github.com/Kinect/PyKinect2/pull/87  
 PyPi outdated package, follow this comment to fix: https://github.com/Kinect/PyKinect2/issues/37#issuecomment-290158054  

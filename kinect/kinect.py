@@ -295,7 +295,7 @@ class GestureDetector:
         n = y1 - m*x1
         for point in point_series[1:9]:
             y = m*point.x +n
-            if y/point.y < 0.9 or y/point.y > 1.1:
+            if y/point.y < 0.85 or y/point.y > 1.15:
                 print("not in a straight line")
                 return False 
         return True
@@ -323,25 +323,25 @@ class GestureDetector:
                  return None
             distance = abs(point.x - point.central)
             if self.disabled_area == None:
-                if (distance <= 300):
+                if (distance <= 250):
                     return 0
-                if (distance > 300 and distance <= 500):
+                if (distance > 250 and distance <= 450):
                     return 1
-                if (distance > 500):
+                if (distance > 450):
                     return 2 
             else:
                 if self.disabled_area == 0:
-                    if (distance <= 400):
+                    if (distance <= 350):
                         return 1
                     else:
                         return 2
                 if self.disabled_area == 1:
-                    if (distance <= 400):
+                    if (distance <= 350):
                         return 0
                     else:
                         return 2
                 if self.disabled_area == 2:
-                    if (distance <= 400):
+                    if (distance <= 350):
                         return 0
                     else:
                         return 1
@@ -409,6 +409,3 @@ if __name__ == "__main__":
     kinect_thread = threading.Thread(target=kinect_thread_runner, args=(hand_data,))
     kinect_thread.setDaemon(False)
     kinect_thread.start()
-    time.sleep(7)
-    #get hand data
-    print(hand_data.get())

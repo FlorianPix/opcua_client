@@ -196,13 +196,13 @@ def kinect_thread_runner(fps, request_status):
 
 if __name__ == '__main__':
     kinect_connected = True
-    simulation = False
-    done = False
+    simulation = True
 
     app = QApplication([])
     app = global_style.set_style(app)
     window = MainWindow(simulation)
     if kinect_connected:
+        done = False
         hand_data = Queue(maxsize=1)
         kinect_thread = threading.Thread(target=kinect_thread_runner, args=(30, hand_data,))
         kinect_thread.setDaemon(False)
@@ -212,7 +212,7 @@ if __name__ == '__main__':
         timer_gui.timeout.connect(window.update_gui)
         timer_gui.start(35)
 
-    window.resize(1920, 1080)
+    window.resize(1750, 1200)
     window.show()
 
     timer = QtCore.QTimer()

@@ -66,3 +66,6 @@ View with white background to have readable text!
 PyKinect2 is not maintained anymore, here are 2 common fixes you should apply after install.  
 Python3.8 compatibility issues: https://github.com/Kinect/PyKinect2/pull/87  
 PyPi outdated package, follow this comment to fix: https://github.com/Kinect/PyKinect2/issues/37#issuecomment-290158054  
+
+## Licence
+The Repository has been published under the MIT license. The details can be viewed in the [LICENSE file](LICENSE)
